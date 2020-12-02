@@ -26,22 +26,38 @@ As avid yelp users, we know the importance of finding a good place to eat or vis
 
 ## User Story
 As a USER I want to see a sign-up button so I can sign in.
-As a USER I want to see a form when I click on the sign up button, I can create my account
-As a USER I want to click a button to submit my information so I can access to app
-As a USER I want to see a logout button so i CAN sign out
-As a USER I want to see a login button so I can access my account
+
+As a USER I want to see a form when I click on the sign up button, I can create my account.
+
+As a USER I want to click a button to submit my information so I can access to app.
+
+As a USER I want to see a logout button so i CAN sign out.
+
+As a USER I want to see a login button so I can access my account.
+
 As a USER I want a search button so I can click on it to search for restaurants.
-As a USER I want to a search page with empty input field so I can search for a location
-As a USER I want to type in a city so I can see the places in that city
-As a USER I want to see the restaurants and places so I can see what’s popular
-As a USER I want to see a save button next to each place so I can save it to my list
-As a USER I want to see the saved place in my profile so I can see the places I want to go 
-As a USER I want to see the saved list so that I can see the places I’ve saved
-As a USER I want to delete a place so that I can remove it from my list 
-As a USER I want to add to my packing list so that I can see what I have added
-As a USER I want a delete button from my list so I can delete items 
-As a USER I want to see a team page so I know who made the app
-As a USER I want to see the the individual team githubs 
+
+As a USER I want to a search page with empty input field so I can search for a location.
+
+As a USER I want to type in a city so I can see the places in that city.
+
+As a USER I want to see the restaurants and places so I can see what’s popular.
+
+As a USER I want to see a save button next to each place so I can save it to my list.
+
+As a USER I want to see the saved place in my profile so I can see the places I want to go.
+
+As a USER I want to see the saved list so that I can see the places I’ve saved.
+
+As a USER I want to delete a place so that I can remove it from my list.
+
+As a USER I want to add to my packing list so that I can see what I have added.
+
+As a USER I want a delete button from my list so I can delete items.
+
+As a USER I want to see a team page so I know who made the app.
+
+As a USER I want to see the the individual team githubs. 
 
 
 
