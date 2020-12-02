@@ -22,7 +22,7 @@ As avid yelp users, we know the importance of finding a good place to eat or vis
 
 
 ## Visuals
-![visual](public/use.gif)
+![visual](https://github.com/kent28808/MERN/blob/main/client/public/app.gif)
 
 ## User Story
 As a USER I want to see a sign-up button so I can sign in.
