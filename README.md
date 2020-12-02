@@ -87,7 +87,9 @@ MIT License
   
 ## Contributors
    [Biencarlo Villa](https://github.com/biencarlovilla)
+   
    [Leslie Villatoro](https://github.com/leslievill)
+   
    [Ken Tanoue](https://github.com/kent28808)
    
 ## Deployed-Link
