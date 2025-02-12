@@ -1,4 +1,4 @@
-  // require('dotenv').config();
+require('dotenv').config();
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -9,8 +9,25 @@ const routes = require("./routes")
 const app = express();
 
 // Mongoose stuff
-var mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/wheretogo', {useMongoClient: true});
+
+const mongoose = require('mongoose');
+const uri = "mongodb+srv://kent28808:TestTest@cluster0.z8hx5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+
+async function run() {
+  try {
+    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
+    await mongoose.connect(uri, clientOptions);
+    await mongoose.connection.db.admin().command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await mongoose.disconnect();
+  }
+}
+run().catch(console.dir);
+
 
 // Define middleware here
 app.use(favicon(path.join(__dirname, 'client/public', 'favicon.ico')));
