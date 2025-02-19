@@ -6,7 +6,7 @@
 }
 
 .App-header {
-  height: 450px;
+  height: 800px;
   padding: 20px;
   color: white;
 }
@@ -158,7 +158,7 @@ header {
 
 /* HOW IT WORKS */
 .About-container-how {
-  padding-top: 360px;
+  padding-top: 780px;
   padding-bottom: 100px;
   background-color: #bce6f7;
 }
@@ -279,17 +279,18 @@ header {
 
 /* SEARCH CONTAINER */
 .Search {
-  padding-top: 320px;
+  padding-top: 700px;
 }
 
 .login-form {
-  padding-top: 320px;
+  padding-top: 540px;
   margin-top: 150px;
   margin-bottom: 80px;
 }
 
 .signup-form {
-  padding-top: 400px;
+  padding-top: 600px;
+  margin-top: 100px;
   margin-bottom: 80px;
 }
 
