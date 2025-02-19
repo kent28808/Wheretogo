@@ -1,4 +1,6 @@
-[[redirects]]
-from="/*"
-to="/index.html"
-status=200
+[build]
+command = "react-router build"
+publish = "build/client"
+
+[dev]
+command = "react-router dev"
