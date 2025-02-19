@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-// import Signup from './auth/Signup.js';
-import { Link } from 'react-router-dom';
-import Results from './Results';
-import Signup from '../auth/Signup';
 
 class HowItWorks extends Component {
   render() {
