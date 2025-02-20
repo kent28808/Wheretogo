@@ -93,4 +93,4 @@ MIT License
    [Ken Tanoue](https://github.com/kent28808)
    
 ## Deployed-Link
-  [Live ](https://wheretogo2.herokuapp.com/)
+  [Live ](https://wheretogo2.vercel.app/)
