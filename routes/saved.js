@@ -29,51 +29,31 @@ router.post('/results', function (req, res) {
     console.log(client)
 });
 
-module.exports = async function handler(req, res) {
-    if (req.method === 'POST') {
-      try {
-        const searchRequest = {
-          location: req.body.location,
-          limit: 12,
-        };
-  
-        const response = await client.search(searchRequest);
-        const result = response.jsonBody;
-        const prettyJson = JSON.stringify(result, null, 4);
-        res.status(200).send(prettyJson);  // Send the formatted Yelp data as the response
-      } catch (err) {
-        console.log('Error:', err);
-        res.status(500).json({ error: 'Failed to fetch data from Yelp API' });
-      }
-    } else {
-      res.status(404).json({ error: 'Not Found' });
-    }
-  }
-// POST - save restaurant to db for user profile
-// router.post('/results/restaurantsaved', function (req, res) {
-//     var userId = req.body.user.id;
-//     User.findById(userId)
-//         .exec(function (err, foundUser) {
-//             if (err) {
-//                 res.status(500).json({ error: err.message });
-//             } else {
-//                 foundUser.restaurant.push({
-//                     "name": req.body.business.name,
-//                     "url": req.body.business.url,
-//                     "imgurl": req.body.business.image_url,
-//                     "rating": req.body.business.rating,
-//                     "category": req.body.business.categories[0].title
-//                 });
-//                 foundUser.save(function (err) {
-//                     if (err) {
-//                         console.log(err);
-//                         return;
-//                     }
-//                 });
-//                 res.json(foundUser);
-//             }
-//         });
-// });
+//POST - save restaurant to db for user profile
+router.post('/results/restaurantsaved', function (req, res) {
+    var userId = req.body.user.id;
+    User.findById(userId)
+        .exec(function (err, foundUser) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            } else {
+                foundUser.restaurant.push({
+                    "name": req.body.business.name,
+                    "url": req.body.business.url,
+                    "imgurl": req.body.business.image_url,
+                    "rating": req.body.business.rating,
+                    "category": req.body.business.categories[0].title
+                });
+                foundUser.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                });
+                res.json(foundUser);
+            }
+        });
+});
 
 // GET user profile with saved restaurants
 router.get('/profile/:id', function (req, res) {
