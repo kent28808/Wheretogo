@@ -57,14 +57,20 @@ if (process.env.NODE_ENV === "production") {
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'client/build')));
   
+  // API Routes
+  app.use('/api/saved', require('./routes/saved'));
+  app.use('/api', routes);
+  
   // Handle React routing, return all requests to React app
   app.get('*', function(req, res) {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-    }
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 } else {
   app.use(express.static(path.join(__dirname, 'client/public')));
+  
+  // API Routes
+  app.use('/api/saved', require('./routes/saved'));
+  app.use('/api', routes);
 }
 
 // Error logging middleware
@@ -89,10 +95,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-
-// API Routes - make sure these come before the catch-all route
-app.use('/api/saved', require('./routes/saved'));
-app.use('/api', routes);
 
 // Add error handling for API 404s
 app.use('/api/*', (req, res) => {
