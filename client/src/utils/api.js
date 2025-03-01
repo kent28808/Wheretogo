@@ -2,10 +2,12 @@ import axios from 'axios';
 
 class API {
   constructor() {
+    const baseURL = process.env.NODE_ENV === 'production'
+      ? process.env.REACT_APP_API_URL || '' // Will default to same domain in production
+      : 'http://localhost:3001';
+
     this.instance = axios.create({
-      baseURL: process.env.NODE_ENV === 'production' 
-        ? '' 
-        : 'http://localhost:3001',
+      baseURL,
       headers: {
         'Content-Type': 'application/json'
       },

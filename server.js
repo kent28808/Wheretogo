@@ -56,6 +56,13 @@ app.use(function(req, res, next) {
 if (process.env.NODE_ENV === "production") {
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'client/build')));
+  
+  // Handle React routing, return all requests to React app
+  app.get('*', function(req, res) {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    }
+  });
 } else {
   app.use(express.static(path.join(__dirname, 'client/public')));
 }
@@ -87,22 +94,13 @@ app.use((req, res, next) => {
 app.use('/api/saved', require('./routes/saved'));
 app.use('/api', routes);
 
-// Add error handling for 404s
+// Add error handling for API 404s
 app.use('/api/*', (req, res) => {
   console.log('404 for API route:', req.originalUrl);
   res.status(404).json({
     error: 'API endpoint not found',
     path: req.originalUrl
   });
-});
-
-// Handle React routing, return all requests to React app
-app.get('*', function(req, res) {
-  if (process.env.NODE_ENV === "production") {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  } else {
-    res.sendFile(path.join(__dirname, 'client/public', 'index.html'));
-  }
 });
 
 // Error handling middleware
