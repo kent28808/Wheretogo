@@ -5,11 +5,11 @@
   "main": "server.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "DEBUG=express:* nodemon server.js",
+    "server": "nodemon server.js",
     "client": "cd client && npm start",
     "build": "cd client && npm install && npm run build",
     "vercel-build": "cd client && npm install && npm run build",
-    "start": "cd client && npm start",
+    "start": "node server.js",
     "start:prod": "node server.js",
     "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
     "install": "cd client && npm install",
