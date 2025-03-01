@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Search from './Search.js';
 import RestaurantResults from './RestaurantResults.js';
-import axios from 'axios';
+import API from '../utils/api';
 
 class Results extends Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class Results extends Component {
     this.state = {
       query: '',
       businesses: [],
+      error: null
     }
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -17,58 +18,87 @@ class Results extends Component {
     this.setState({ query: e.target.value });
   }
 
-  preventing = (e) => {
+  preventing = async (e) => {
     e.preventDefault();
-    axios.post('/saved/results', {
-      location: this.state.query,
-    }).then((res) => {
-      this.setState({ businesses: res.data.businesses });
-    }).catch((err) => {
-      console.log("error:", err);
-    });
+    console.log('Submitting search with query:', this.state.query);
+    
+    try {
+        console.log('Making API request...');
+        const response = await API.post('/saved/results', {
+            location: this.state.query,
+        });
+        console.log('Raw API response:', response);
+        
+        const data = response.data;
+        console.log('Parsed data:', data);
+        
+        if (!data.businesses) {
+            throw new Error('No businesses found in response');
+        }
+        
+        this.setState({ 
+            businesses: data.businesses,
+            error: null 
+        });
+    } catch (error) {
+        const errorDetails = error.response?.data?.details || error.message;
+        console.error('Search failed:', {
+            error: error.response?.data,
+            status: error.response?.status,
+            details: errorDetails
+        });
+        
+        this.setState({ 
+            error: `Failed to fetch restaurants: ${errorDetails}`,
+            businesses: [] 
+        });
+    }
   }
 
-  saveClick = (e) => {
+  saveClick = async (e) => {
     e.preventDefault();
-    let businessToSave;
-    for (let i = 0; i < this.state.businesses.length; i++) {
-      if (this.state.businesses[i].id === e.target.id) {
-        businessToSave = this.state.businesses[i];
-      }
+    const businessToSave = this.state.businesses.find(function(b) {
+      return b.id === e.target.id;
+    });
+    
+    if (!businessToSave) {
+      console.error('Business not found');
+      return;
     }
 
-    //find user saved items to display on profile page
-    axios.post('/saved/results/restaurantsaved', {
-      business: businessToSave,
-      user: this.props.user,
-    }).then((res) => {
-      // console.log("response data", res.data);
-    }).catch((err) => {
-      console.log("err", err);
-    });
+    try {
+      const response = await API.post('/saved/results/restaurantsaved', {
+        business: businessToSave,
+        user: this.props.user,
+      });
+      console.log('Restaurant saved successfully:', response.data);
+    } catch (error) {
+      console.error('Failed to save restaurant:', error.message);
+    }
   }
 
   render() {
-    var results;
-    var res = this.state.businesses;
-
-    if (this.state.businesses) {
-      results = res.map((b) => (
-        <div className="container Results">
-          <li>b</li>
-        </div>
-      ));
-    } else {
-      results = <p>none</p>
-      console.log(this.state.businesses);
-    }
+    const { businesses, error } = this.state;
 
     return (
       <div className="container Results">
         <div className="row">
-          <div className="col s12 m6 z-depth-3">{results}</div>
-          <Search query={this.state.query} handleInputChange={(event) => this.handleInputChange(event)} preventing={this.preventing} onSubmit={this.handleSubmit} />
-          <RestaurantResults businesses={this.state.businesses} saveClick={this.saveClick} />
+          <Search 
+            query={this.state.query} 
+            handleInputChange={this.handleInputChange} 
+            preventing={this.preventing} 
+          />
+          
+          {error && (
+            <div className="col s12">
+              <p className="red-text">{error}</p>
+            </div>
+          )}
+
+          <RestaurantResults 
+            businesses={businesses} 
+            saveClick={this.saveClick} 
+          />
         </div>
       </div>
     );

@@ -1,32 +1,101 @@
 require('dotenv').config();
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var User = require('../models/user');
-var bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
-// Yelp fusion setup
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const yelp = require('yelp-fusion');
-const apikey = process.env.apikey;
-const client = yelp.client(apikey);
+
+// Yelp fusion setup with better error handling
+let client;
+try {
+    const apiKey = process.env.YELP_API_KEY;
+    if (!apiKey) {
+        throw new Error('YELP_API_KEY environment variable is not set');
+    }
+    
+    // Remove any whitespace from the API key
+    const cleanApiKey = apiKey.trim();
+    
+    // Initialize the client with the API key
+    client = yelp.client(cleanApiKey, {
+        // Add additional options if needed
+        axiosOptions: {
+            headers: {
+                'Authorization': `Bearer ${cleanApiKey}`,
+                'Accept': 'application/json',
+            }
+        }
+    });
+    console.log('Yelp client initialized successfully');
+} catch (error) {
+    console.error('Failed to initialize Yelp client:', error);
+}
 
 //Yelp API call to get restaurant results
-router.post('/results', function (req, res) {
-    // console.log(req.headers)
-    const searchRequest = {
-        location: req.body.location, //search location from front end
-        limit: 12
+router.post('/results', async (req, res) => {
+    try {
+        console.log('Received search request:', req.body);
+
+        if (!client) {
+            throw new Error('Yelp client not initialized');
+        }
+
+        if (!req.body.location) {
+            return res.status(400).json({
+                error: 'Location is required'
+            });
+        }
+
+        const searchRequest = {
+            term: 'restaurants',
+            location: req.body.location,
+            limit: 12,
+            sort_by: 'rating'
+        };
+
+        console.log('Making Yelp API request with:', searchRequest);
+        
+        const response = await client.search(searchRequest);
+        
+        if (!response.jsonBody || !response.jsonBody.businesses) {
+            throw new Error('Invalid response from Yelp API');
+        }
+
+        const { businesses, total } = response.jsonBody;
+        console.log(`Found ${businesses.length} of ${total} total businesses`);
+        
+        res.json({
+            businesses,
+            total,
+            region: response.jsonBody.region
+        });
+        
+    } catch (error) {
+        console.error('Yelp API Error:', error);
+        console.error('Error stack:', error.stack);
+        
+        // Send appropriate error response
+        if (error.message.includes('not initialized')) {
+            res.status(500).json({
+                error: 'Server configuration error',
+                details: 'Yelp API client not properly configured'
+            });
+        } else if (error.statusCode === 400) {
+            res.status(400).json({
+                error: 'Invalid request',
+                details: error.message,
+                response: error.response?.body // Include the response body for debugging
+            });
+        } else {
+            res.status(500).json({
+                error: 'Failed to fetch results',
+                details: error.message,
+                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            });
+        }
     }
-    client.search(searchRequest).then(response => {
-        console.log(response)
-        const result = response.jsonBody;
-        const prettyJson = JSON.stringify(result, null, 4);
-        res.send(prettyJson);
-    }).catch((err) => {
-        console.log("error:", err);
-    });
-    console.log(searchRequest)
-    console.log(client)
 });
 
 //POST - save restaurant to db for user profile
